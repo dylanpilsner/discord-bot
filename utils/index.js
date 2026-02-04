@@ -8,10 +8,7 @@ import {
 import { isEqual, format } from "date-fns";
 import { rollDice } from "../dice.js";
 import { callAI } from "../ai.js";
-
-async function getJsonMembers() {
-  return JSON.parse(await fs.readFile("members.json", "utf8"));
-}
+import { createOrUpdateUsers, getMembers } from "../controllers/users.js";
 
 export async function iaReplies(
   action,
@@ -68,16 +65,6 @@ export async function executeAction(grantedAction, interaction) {
   return 200;
 }
 
-export async function updateJsonMembers(jsonMembers) {
-  try {
-    const jsonString = JSON.stringify(jsonMembers, null, 2); // bonito 😌
-    await fs.writeFile("members.json", jsonString, "utf8");
-    console.log("Archivo sobrescrito correctamente");
-  } catch (err) {
-    console.error("Error al escribir el archivo:", err);
-  }
-}
-
 export async function getMembersCommand(interaction) {
   const members = await interaction.guild.members.fetch();
 
@@ -87,20 +74,25 @@ export async function getMembersCommand(interaction) {
       name: member.user.username,
       date: format(new Date(), "dd-MM-yyyy"),
       attemptsAtDate: 0,
-      id4: false,
+      dFour: false,
       victim: null,
     };
   });
 
-  interaction.reply("Archivo actualizado correctamente");
-  return updateJsonMembers(mappedMembers);
+  for (let index = 0; index < mappedMembers.length; index++) {
+    const element = mappedMembers[index];
+
+    await createOrUpdateUsers(element);
+  }
+
+  return interaction.reply("Base de datos actualizada");
 }
 
 // ------------
 
 export async function rolCommand(interaction) {
   const userId = interaction.user.id;
-  const members = await getJsonMembers();
+  const members = await getMembers();
   const member = members.find((i) => i.id === userId);
   const today = format(new Date(), "dd-MM-yyyy");
   const didDayChanged = isEqual(today, member.date);
@@ -134,5 +126,8 @@ export async function rolCommand(interaction) {
     );
   }
   member.attemptsAtDate++;
-  updateJsonMembers(members);
+  createOrUpdateUsers(member);
 }
+
+// getJsonMembers
+// updateJsonMembers

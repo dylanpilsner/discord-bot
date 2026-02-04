@@ -36,7 +36,7 @@ export async function timeOutMember(interaction) {
   const member = getMember(interaction);
 
   try {
-    await member.timeout(10000);
+    await member.timeout(20000);
   } catch (err) {
     const errorBody = err.rawError;
     const errorCode = errorBody.code;
