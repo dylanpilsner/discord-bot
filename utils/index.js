@@ -30,36 +30,28 @@ export async function iaReplies(
   );
 }
 
-export async function executeAction(grantedAction, interaction) {
-  const member = getMember(interaction);
+export async function executeAction(grantedAction, interaction, victim) {
   if (
-    grantedAction === "kick" ||
-    grantedAction === "kickSelf" ||
-    grantedAction === "mute" ||
-    grantedAction === "muteSelf"
+    (grantedAction === "kick" ||
+      grantedAction === "kickSelf" ||
+      grantedAction === "mute" ||
+      grantedAction === "muteSelf") &&
+    !victim.voice.channel
   ) {
-    if (!member.voice.channel)
-      await interaction.editReply("❌ El usuario no está en un canal de voz");
+    await interaction.editReply("❌ El usuario no está en un canal de voz");
     return { error: 400 };
   }
 
-  if (grantedAction === "kick") {
-    await disconnectMember(interaction);
+  if (!victim) return false;
+
+  if (grantedAction === "kick" || grantedAction === "kickSelf") {
+    await disconnectMember(victim);
   }
-  if (grantedAction === "mute") {
-    await muteMember(interaction);
+  if (grantedAction === "mute" || grantedAction === "muteSelf") {
+    await muteMember(victim);
   }
-  if (grantedAction === "timeout") {
-    await timeOutMember(interaction);
-  }
-  if (grantedAction === "kickSelf") {
-    await disconnectMember(interaction, true);
-  }
-  if (grantedAction === "muteSelf") {
-    await muteMember(interaction, true);
-  }
-  if (grantedAction === "timeoutSelf") {
-    await timeOutMember(interaction, true);
+  if (grantedAction === "timeout" || grantedAction === "timeoutSelf") {
+    await timeOutMember(interaction, victim);
   }
 
   return 200;
@@ -90,12 +82,27 @@ export async function getMembersCommand(interaction) {
 
 // ------------
 
+function isSelf(action) {
+  if (
+    action === "kick" ||
+    action === "kickSelf" ||
+    action === "mute" ||
+    action === "muteSelf"
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export async function rolCommand(interaction) {
   const userId = interaction.user.id;
   const members = await getMembers();
   const member = members.find((i) => i.id === userId);
+  let victim = await getMember(interaction);
   const today = format(new Date(), "dd-MM-yyyy");
   const didDayChanged = isEqual(today, member.date);
+
+  if (!victim) return;
 
   if (!didDayChanged) {
     member.attemptsAtDate = 0;
@@ -114,7 +121,14 @@ export async function rolCommand(interaction) {
   const response = await callAI(`${action}. Saqué un ${diceNumber}`);
   const grantedAction = response.grantedAction;
 
-  const actionResponse = await executeAction(grantedAction, interaction);
+  const self = isSelf(grantedAction);
+  victim = interaction.guild.members.cache.get(self ? userId : member.id);
+
+  const actionResponse = await executeAction(
+    grantedAction,
+    interaction,
+    victim,
+  );
 
   if (actionResponse === 200) {
     await iaReplies(
@@ -128,6 +142,3 @@ export async function rolCommand(interaction) {
   member.attemptsAtDate++;
   createOrUpdateUsers(member);
 }
-
-// getJsonMembers
-// updateJsonMembers

@@ -2,7 +2,12 @@ import {} from "discord.js";
 
 export function getMember(interaction, isSelf) {
   const arg = interaction.options.getString("accion");
-  const userId = arg.split("<")[1].split(">")[0].replace("@", "");
+  const userId = arg.split("<")[1]?.split(">")[0]?.replace("@", "");
+  if (!userId) {
+    interaction.reply("Tenés que arrobar a una persona capo");
+    return false;
+  }
+
   const member = interaction.guild.members.cache.get(userId);
   const me = interaction.user.id;
 
@@ -11,32 +16,32 @@ export function getMember(interaction, isSelf) {
   return member;
 }
 
-export async function disconnectMember(interaction) {
-  const member = getMember(interaction);
+export async function disconnectMember(victim) {
+  if (!victim) return;
 
-  if (!member.voice.channel) {
+  if (!victim.voice.channel) {
     return;
   }
 
-  await member.voice.disconnect();
+  await victim.voice.disconnect();
 }
 
-export async function muteMember(interaction) {
-  const member = getMember(interaction);
-  const isMemberMuted = member.voice.serverMute;
+export async function muteMember(victim) {
+  if (!victim) return;
+  const isMemberMuted = victim.voice.serverMute;
 
-  if (!member.voice.channel) {
+  if (!victim.voice.channel) {
     return;
   }
 
-  await member.voice.setMute(!isMemberMuted);
+  await victim.voice.setMute(!isMemberMuted);
 }
 
-export async function timeOutMember(interaction) {
-  const member = getMember(interaction);
+export async function timeOutMember(interaction, victim) {
+  if (!victim) return;
 
   try {
-    await member.timeout(20000);
+    await victim.timeout(20000);
   } catch (err) {
     const errorBody = err.rawError;
     const errorCode = errorBody.code;
