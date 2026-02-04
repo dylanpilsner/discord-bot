@@ -101,15 +101,14 @@ export async function rolCommand(interaction) {
   const today = format(new Date(), "dd-MM-yyyy");
   const didDayChanged = isEqual(today, member.date);
 
-  if (!victim) return;
+  if (!victim) return interaction.reply("Tenés que arrobar a alguien capo");
 
   if (!didDayChanged) {
     member.attemptsAtDate = 0;
   }
 
   if (member.attemptsAtDate >= 5) {
-    interaction.reply("Ya no tenés más roleos por hoy campeón");
-    return;
+    return interaction.reply("Ya no tenés más roleos por hoy campeón");
   }
 
   const diceNumber = rollDice();

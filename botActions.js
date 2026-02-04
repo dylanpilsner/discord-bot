@@ -4,7 +4,6 @@ export function getMember(interaction, isSelf) {
   const arg = interaction.options.getString("accion");
   const userId = arg.split("<")[1]?.split(">")[0]?.replace("@", "");
   if (!userId) {
-    interaction.reply("Tenés que arrobar a una persona capo");
     return false;
   }
 
