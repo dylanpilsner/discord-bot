@@ -84,10 +84,9 @@ export async function getMembersCommand(interaction) {
 
 function isSelf(action) {
   if (
-    action === "kick" ||
     action === "kickSelf" ||
-    action === "mute" ||
-    action === "muteSelf"
+    action === "muteSelf" ||
+    action === "timeoutSelf"
   ) {
     return true;
   }
@@ -118,11 +117,12 @@ export async function rolCommand(interaction) {
   await interaction.deferReply();
 
   const action = interaction.options.getString("accion");
-  const response = await callAI(`${action}. Saqué un ${diceNumber}`);
+  const response = await callAI(`${action}. Saqué un ${15}`);
   const grantedAction = response.grantedAction;
 
   const self = isSelf(grantedAction);
-  victim = interaction.guild.members.cache.get(self ? userId : member.id);
+  const realVictim = self ? userId : victim.id;
+  victim = await interaction.guild.members.cache.get(realVictim);
 
   const actionResponse = await executeAction(
     grantedAction,
