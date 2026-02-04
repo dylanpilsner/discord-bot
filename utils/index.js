@@ -117,7 +117,7 @@ export async function rolCommand(interaction) {
   await interaction.deferReply();
 
   const action = interaction.options.getString("accion");
-  const response = await callAI(`${action}. Saqué un ${15}`);
+  const response = await callAI(`${action}. Saqué un ${diceNumber}`);
   const grantedAction = response.grantedAction;
 
   const self = isSelf(grantedAction);
