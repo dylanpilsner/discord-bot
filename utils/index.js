@@ -17,6 +17,12 @@ export async function iaReplies(
   result,
   interaction,
 ) {
+  console.log("[DEBUG ACK]", {
+    command: interaction.commandName,
+    replied: interaction.replied,
+    deferred: interaction.deferred,
+    location: "iaReplies",
+  });
   await interaction.editReply(
     `🎲 #Tirada de D20
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -38,6 +44,12 @@ export async function executeAction(grantedAction, interaction, victim) {
       grantedAction === "muteSelf") &&
     !victim.voice.channel
   ) {
+    console.log("[DEBUG ACK]", {
+      command: interaction.commandName,
+      replied: interaction.replied,
+      deferred: interaction.deferred,
+      location: "executeAction",
+    });
     await interaction.editReply("❌ El usuario no está en un canal de voz");
     return { error: 400 };
   }
@@ -101,6 +113,12 @@ export async function rolCommand(interaction) {
   const today = format(new Date(), "dd-MM-yyyy");
   const didDayChanged = isEqual(today, member.date);
 
+  console.log("[DEBUG ACK]", {
+    command: interaction.commandName,
+    replied: interaction.replied,
+    deferred: interaction.deferred,
+    location: "must @ someone",
+  });
   if (!victim) return interaction.reply("Tenés que arrobar a alguien capo");
 
   if (!didDayChanged) {
@@ -108,14 +126,25 @@ export async function rolCommand(interaction) {
   }
 
   if (member.attemptsAtDate >= 5) {
+    console.log("[DEBUG ACK]", {
+      command: interaction.commandName,
+      replied: interaction.replied,
+      deferred: interaction.deferred,
+      location: "limitOfRoles",
+    });
     return interaction.reply("Ya no tenés más roleos por hoy campeón");
   }
 
   const diceNumber = rollDice();
 
-  await interaction.deferReply();
-
   const action = interaction.options.getString("accion");
+  console.log("[DEBUG ACK]", {
+    command: interaction.commandName,
+    replied: interaction.replied,
+    deferred: interaction.deferred,
+    location: "start:defer",
+  });
+  await interaction.deferReply();
   const response = await callAI(`${action}. Saqué un ${diceNumber}`);
   const grantedAction = response.grantedAction;
 
