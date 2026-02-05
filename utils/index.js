@@ -123,6 +123,7 @@ export async function rolCommand(interaction) {
 
   if (!didDayChanged) {
     member.attemptsAtDate = 0;
+    member.date = today;
   }
 
   if (member.attemptsAtDate >= 5) {
