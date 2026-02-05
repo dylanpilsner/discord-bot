@@ -41,3 +41,17 @@ export async function getMembers() {
   const members = await User.findAll();
   return members.map((i) => i.dataValues);
 }
+
+export async function getUser(id) {
+  const user = await User.findOne({
+    where: {
+      id,
+    },
+  });
+
+  if (!user) {
+    throw { message: "El usuario no existe en la base de datos" };
+  }
+
+  return user;
+}

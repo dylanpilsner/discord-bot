@@ -1,11 +1,6 @@
 import "dotenv/config";
-// const { Client, GatewayIntentBits, Events } = require("discord.js");
 import { Client, GatewayIntentBits } from "discord.js";
-import { callAI } from "./ai.js";
-import { rollDice } from "./dice.js";
-import { disconnectMember, muteMember, timeOutMember } from "./botActions.js";
-import fs from "fs";
-import { getMembersCommand, rolCommand } from "./utils/index.js";
+import { getMembersCommand, rolCommand, triesCommand } from "./utils/index.js";
 
 const client = new Client({
   intents: [
@@ -28,6 +23,9 @@ client.on("interactionCreate", async (interaction) => {
 
   if (interaction.commandName === "rolear") {
     rolCommand(interaction);
+  }
+  if (interaction.commandName === "intentos") {
+    triesCommand(interaction);
   }
 });
 
