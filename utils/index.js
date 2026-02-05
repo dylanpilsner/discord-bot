@@ -1,4 +1,3 @@
-import fs from "fs/promises";
 import {
   disconnectMember,
   getVictim,
@@ -17,12 +16,6 @@ export async function iaReplies(
   result,
   interaction,
 ) {
-  console.log("[DEBUG ACK]", {
-    command: interaction.commandName,
-    replied: interaction.replied,
-    deferred: interaction.deferred,
-    location: "iaReplies",
-  });
   await interaction.editReply(
     `🎲 #Tirada de D20
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -44,12 +37,6 @@ export async function executeAction(grantedAction, interaction, victim) {
       grantedAction === "muteSelf") &&
     !victim.voice.channel
   ) {
-    console.log("[DEBUG ACK]", {
-      command: interaction.commandName,
-      replied: interaction.replied,
-      deferred: interaction.deferred,
-      location: "executeAction",
-    });
     await interaction.editReply("❌ El usuario no está en un canal de voz");
     return { error: 400 };
   }
@@ -76,7 +63,7 @@ export async function getMembersCommand(interaction) {
     return {
       id: member.id,
       name: member.user.username,
-      date: format(new Date(), "dd-MM-yyyy"),
+      date: format(new Date(), "yyyy-MM-dd"),
       attemptsAtDate: 0,
       dFour: false,
       victim: null,
@@ -109,41 +96,24 @@ export async function rolCommand(interaction) {
   const userId = interaction.user.id;
   const members = await getMembers();
   const member = members.find((i) => i.id === userId);
-  let victim = await getVictim(interaction);
-  const today = format(new Date(), "dd-MM-yyyy");
-  const didDayChanged = isEqual(today, member.date);
+  let victim = getVictim(interaction);
+  const today = format(new Date(), "yyyy-MM-dd");
+  const didDayChanged = !isEqual(today, member.date);
 
-  console.log("[DEBUG ACK]", {
-    command: interaction.commandName,
-    replied: interaction.replied,
-    deferred: interaction.deferred,
-    location: "must @ someone",
-  });
   if (!victim) return interaction.reply("Tenés que arrobar a alguien capo");
 
-  if (!didDayChanged) {
+  if (didDayChanged) {
     member.attemptsAtDate = 0;
   }
 
   if (member.attemptsAtDate >= 5) {
-    console.log("[DEBUG ACK]", {
-      command: interaction.commandName,
-      replied: interaction.replied,
-      deferred: interaction.deferred,
-      location: "limitOfRoles",
-    });
     return interaction.reply("Ya no tenés más roleos por hoy campeón");
   }
 
   const diceNumber = rollDice();
 
   const action = interaction.options.getString("accion");
-  console.log("[DEBUG ACK]", {
-    command: interaction.commandName,
-    replied: interaction.replied,
-    deferred: interaction.deferred,
-    location: "start:defer",
-  });
+
   await interaction.deferReply();
   const response = await callAI(
     `${action}. Saqué un ${diceNumber}`,
@@ -151,9 +121,7 @@ export async function rolCommand(interaction) {
   );
   const grantedAction = response.grantedAction;
 
-  const self = isSelf(grantedAction);
-  const realVictim = self ? userId : victim.id;
-  victim = await interaction.guild.members.cache.get(realVictim);
+  victim = isSelf(grantedAction) ? getVictim(interaction, true) : victim;
 
   const actionResponse = await executeAction(
     grantedAction,

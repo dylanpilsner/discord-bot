@@ -3,12 +3,13 @@ import {} from "discord.js";
 export function getVictim(interaction, isSelf) {
   const arg = interaction.options.getString("accion");
   const userId = arg.split("<")[1]?.split(">")[0]?.replace("@", "");
+  const myId = interaction.user.id``;
   if (!userId) {
     return false;
   }
 
   const member = interaction.guild.members.cache.get(userId);
-  const me = interaction.user.id;
+  const me = interaction.guild.members.cache.get(myId);
 
   if (isSelf) return me;
 

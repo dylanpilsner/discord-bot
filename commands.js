@@ -18,6 +18,10 @@ const commands = [
     name: "refreshmembers",
     description: "Actualizar base de datos",
   },
+  {
+    name: "intentos",
+    description: "Ver cuántos intentos te quedan",
+  },
 ];
 
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
