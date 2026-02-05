@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import {
   disconnectMember,
-  getMember,
+  getVictim,
   muteMember,
   timeOutMember,
 } from "../botActions.js";
@@ -109,7 +109,7 @@ export async function rolCommand(interaction) {
   const userId = interaction.user.id;
   const members = await getMembers();
   const member = members.find((i) => i.id === userId);
-  let victim = await getMember(interaction);
+  let victim = await getVictim(interaction);
   const today = format(new Date(), "dd-MM-yyyy");
   const didDayChanged = isEqual(today, member.date);
 
@@ -145,7 +145,10 @@ export async function rolCommand(interaction) {
     location: "start:defer",
   });
   await interaction.deferReply();
-  const response = await callAI(`${action}. Saqué un ${diceNumber}`);
+  const response = await callAI(
+    `${action}. Saqué un ${diceNumber}`,
+    diceNumber,
+  );
   const grantedAction = response.grantedAction;
 
   const self = isSelf(grantedAction);
@@ -167,6 +170,7 @@ export async function rolCommand(interaction) {
       interaction,
     );
   }
+
   member.attemptsAtDate++;
   createOrUpdateUsers(member);
 }

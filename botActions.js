@@ -1,6 +1,6 @@
 import {} from "discord.js";
 
-export function getMember(interaction, isSelf) {
+export function getVictim(interaction, isSelf) {
   const arg = interaction.options.getString("accion");
   const userId = arg.split("<")[1]?.split(">")[0]?.replace("@", "");
   if (!userId) {

@@ -2,7 +2,7 @@ import "dotenv/config";
 import { GoogleGenAI } from "@google/genai";
 const ai = new GoogleGenAI({});
 
-export async function callAI(prompt) {
+export async function callAI(prompt, dice) {
   const difficultyTable = {
     MUY_FACIL: 5,
     FACIL: 10,
@@ -30,13 +30,14 @@ Reglas obligatorias:
 - La dificultad debe depender del impacto, gravedad y complejidad de la acción.
 - No uses características del target en la justificación.
 - No hagas chistes basados en personas.
+- El jugador pasará el DC si la tirada es mayor o igual a la dificultad.
 
 Clasificá la dificultad en UNA de estas categorías con sus respectivos DC:
 - MUY_FACIL = 5
 - FACIL = 10
 - MEDIA = 13
 - DIFICIL = 16
-- MUY_DIFICIL = 19
+- MUY_DIFICIL = 18
 - IMPOSIBLE = 25
 
 ACCIONES SOLICITADAS:
@@ -52,7 +53,7 @@ La acción "aislar" puede ser nombrada como "aislar".
 
 Respondé EXCLUSIVAMENTE en JSON (en texto plano) con este formato exacto (los valores de cada campo son a modo de ejemplo):
 {
-  "difficulty": "EXTREMA",
+  "difficulty": "MUY_DIFICIL",
   "reason": "Es una acción violenta con consecuencias graves e irreversibles",
   "result": "Fallaste al intentar *acción* a *usuario*, *comentario gracioso*",
   "grantedAction": null
@@ -78,6 +79,7 @@ IMPORTANTE:
   });
   const jsonResponse = JSON.parse(response.text);
   jsonResponse.difficulty = difficultyTable[jsonResponse.difficulty];
+  jsonResponse.dice = dice;
   console.log(jsonResponse);
   return jsonResponse;
 }
