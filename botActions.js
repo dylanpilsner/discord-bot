@@ -3,7 +3,7 @@ import {} from "discord.js";
 export function getVictim(interaction, isSelf) {
   const arg = interaction.options.getString("accion");
   const userId = arg.split("<")[1]?.split(">")[0]?.replace("@", "");
-  const myId = interaction.user.id``;
+  const myId = interaction.user.id;
   if (!userId) {
     return false;
   }
