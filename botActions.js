@@ -48,16 +48,11 @@ export async function timeOutMember(interaction, victim) {
     const errorMessage = errorBody.message;
     console.log(errorMessage);
     if (errorCode === 50013) {
-      console.log("[DEBUG ACK]", {
-        command: interaction.commandName,
-        replied: interaction.replied,
-        deferred: interaction.deferred,
-        location: "timeoutError",
-      });
-
-      await interaction.editReply(
-        "El bot no tiene permiso para ejecutar esta acción a la persona solicitada",
-      );
+      return {
+        error:
+          "El bot no tiene permiso para ejecutar esta acción a la persona solicitada",
+        code: "50013",
+      };
     }
   }
 }

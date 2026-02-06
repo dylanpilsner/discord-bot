@@ -57,7 +57,11 @@ export async function executeAction(grantedAction, interaction, victim) {
     await muteMember(victim);
   }
   if (grantedAction === "timeout" || grantedAction === "timeoutSelf") {
-    await timeOutMember(interaction, victim);
+    const response = await timeOutMember(interaction, victim);
+    if (response?.code === "50013") {
+      await interaction.editReply(response.error);
+      return { error: response.code };
+    }
   }
 
   return 200;
@@ -105,7 +109,7 @@ export async function rolCommand(interaction) {
   try {
     const member = await getUser(userId);
     let victim = getVictim(interaction);
-    const DayChanged = didDayChanged(member.date);
+    const DayChanged = await didDayChanged(member.date);
 
     if (!victim) return interaction.reply("Tenés que arrobar a alguien capo");
 
