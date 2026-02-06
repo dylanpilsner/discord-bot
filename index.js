@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Client, GatewayIntentBits } from "discord.js";
-import { getMembersCommand, rolCommand, triesCommand } from "./utils/index.js";
+import { refreshMembers, rolCommand, triesCommand } from "./utils/index.js";
 
 const client = new Client({
   intents: [
@@ -18,7 +18,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === "refreshmembers") {
-    await getMembersCommand(interaction);
+    await refreshMembers(interaction);
   }
 
   if (interaction.commandName === "rolear") {

@@ -63,7 +63,7 @@ export async function executeAction(grantedAction, interaction, victim) {
   return 200;
 }
 
-export async function getMembersCommand(interaction) {
+export async function refreshMembers(interaction) {
   const members = await interaction.guild.members.fetch();
 
   const mappedMembers = members.map((member) => {
@@ -77,13 +77,15 @@ export async function getMembersCommand(interaction) {
     };
   });
 
+  await interaction.deferReply();
+
   for (let index = 0; index < mappedMembers.length; index++) {
     const element = mappedMembers[index];
 
     await createOrUpdateUsers(element);
   }
 
-  return interaction.reply("Base de datos actualizada");
+  return interaction.editReply("Base de datos actualizada");
 }
 
 // ------------
