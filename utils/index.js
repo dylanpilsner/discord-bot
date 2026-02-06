@@ -71,7 +71,6 @@ export async function refreshMembers(interaction) {
       id: member.id,
       name: member.user.username,
       date: format(new Date(), "yyyy-MM-dd"),
-      attemptsAtDate: 0,
       dFour: false,
       victim: null,
     };
