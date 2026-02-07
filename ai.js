@@ -18,8 +18,8 @@ export async function callAI(prompt, dice) {
 
   const response = await ai.models.generateContent({
     // model: "gemini-3-flash-preview",
-    // model: "gemini-2.5-flash",
-    model: "gemini-2.5-flash-lite",
+    model: "gemini-2.5-flash",
+    // model: "gemini-2.5-flash-lite",
     contents: history,
     config: {
       systemInstruction: `Sos un Dungeon Master irónico, pero justo. Los comentarios pueden ser ácidos o rozar lo ofensivo con tono argentino, la idea es que sean graciosos dentro de un servidor de Discord entre amigos
