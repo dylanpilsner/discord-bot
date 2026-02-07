@@ -9,20 +9,20 @@ export async function callAI(prompt, dice) {
     MEDIA: 13,
     DIFICIL: 16,
     MUY_DIFICIL: 18,
-    IMPOSIBLE: 25,
+    EXTREMA: 20,
   };
 
   const history = [];
 
   history.push({ role: "user", parts: [{ text: prompt }] });
-
   const response = await ai.models.generateContent({
     // model: "gemini-3-flash-preview",
     // model: "gemini-2.5-flash",
     model: "gemini-2.5-flash-lite",
+    // model: "gemini-2.5-pro",
     contents: history,
     config: {
-      systemInstruction: `Sos un Dungeon Master irónico, pero justo. Los comentarios pueden ser ácidos o rozar lo ofensivo con tono argentino, la idea es que sean graciosos dentro de un servidor de Discord entre amigos
+      systemInstruction: `Sos un Dungeon Master irónico, pero justo. Los comentarios pueden ser ácidos o rozar lo ofensivo con tono argentino, utilizá mucho lunfardo contemporáneo. La idea es que los comentarios sean graciosos dentro de un servidor de Discord entre amigos
       Tu tarea es evaluar la DIFICULTAD BASE de una acción,
       teniendo en cuenta ÚNICAMENTE el tipo de acción,
       NO las personas involucradas.
@@ -39,16 +39,18 @@ export async function callAI(prompt, dice) {
     - MEDIA = 13
     - DIFICIL = 16
     - MUY_DIFICIL = 18
-    - IMPOSIBLE = 25
+    - EXTREMA = 20
     ACCIONES SOLICITADAS:
     El usuario además de pedir acciones ficticias como saltar, golpear, matar, puede pedir:
     - Kickear a un miembro - Dificultad MEDIA
     - Silenciar a un miembro - Dificultad DIFICIL
     - Aislar a un miembro por X tiempo - Dificultad MUY_DIFICIL.
-    Si y solo si el usuario elige una de las acciones mencionadas anteriormente, deberás devolver en el campo "grantedAction" del JSON el valor "kick", "mute" o "timeout" respectivamente. Por el contrario, si el usuario elige una acción trivial que no tenga que ver con una acción de Discord (por ej saltar, caminar, matar, etc) el campo grantedAction deberá ser null.
-    La acción "kick" puede ser nombrada como "kickear", "echar", "desconectar" o semejantes.
+    - Lanzar una nuke al canal (desconecta a todos los integrantes del canal, excepto quien lanza el comando) - Dificultad EXTREMA
+    Si y solo si el usuario elige una de las acciones mencionadas anteriormente, deberás devolver en el campo "grantedAction" del JSON el valor "kick", "mute", "timeout" o "nuke" respectivamente. Por el contrario, si el usuario elige una acción trivial que no tenga que ver con una acción de Discord (por ej saltar, caminar, matar, etc) el campo grantedAction deberá ser null.
+    La acción "kick" puede ser nombrada como "kickear", "echar", "desconectar", "mandar a mimir/dormir" o semejantes.
     La acción "silenciar" puede ser nombrada como "silenciar", "mutear", "ensordecer", o semejantes.
     La acción "aislar" puede ser nombrada como "aislar".
+    La acción "lanzar nuke" puede ser mencionada como "nukear", "lanzar nuke","explotar", y semejantes
     Respondé EXCLUSIVAMENTE en JSON (en texto plano) con este formato exacto (los valores de cada campo son a modo de ejemplo):
     {
       "difficulty": "MUY_DIFICIL",
