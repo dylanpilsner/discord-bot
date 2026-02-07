@@ -1,4 +1,4 @@
-import {} from "discord.js";
+import { getMembers } from "./controllers/users.js";
 
 export function getVictim(interaction, isSelf) {
   const arg = interaction.options.getString("accion");
@@ -58,3 +58,18 @@ export async function timeOutMember(interaction, victim) {
 }
 
 export async function exileMember() {}
+
+export async function nukeChannel(interaction) {
+  const channel = interaction.member.voice.channel;
+  const executorId = interaction.user.id;
+
+  const membersInVoice = channel.members.filter(
+    (member) => member.id !== executorId,
+  );
+
+  if (membersInVoice.size < 1) {
+    return { message: "No hay personas en el canal para nukear.", error: 400 };
+  }
+
+  await Promise.all(membersInVoice.map((member) => member.voice.disconnect()));
+}

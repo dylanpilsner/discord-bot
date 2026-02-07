@@ -4,7 +4,7 @@ import "./models/users.js";
 
 (async function () {
   try {
-    const sync = await sequelize.sync({ force: true });
+    const sync = await sequelize.sync({ alter: true });
     console.log(sync);
   } catch (err) {
     console.log({ err });

@@ -7,6 +7,7 @@ export async function createOrUpdateUsers({
   attemptsAtDate,
   dFour,
   victim,
+  bonus,
 }) {
   const user = await User.findOne({ where: { id } });
   const userId = await user?.get("id");
@@ -21,6 +22,7 @@ export async function createOrUpdateUsers({
         attemptsAtDate: attemptsAtDate ?? userAttempts,
         victim,
         dFour,
+        bonus,
       },
       {
         where: { id },
@@ -35,6 +37,7 @@ export async function createOrUpdateUsers({
     attemptsAtDate: 0,
     victim,
     dFour,
+    bonus: 0,
   });
 }
 

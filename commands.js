@@ -22,6 +22,14 @@ const commands = [
     name: "intentos",
     description: "Ver cuántos intentos te quedan",
   },
+  {
+    name: "bonus",
+    description: "Consultá si tenés un bonus en tu próxima tirada",
+  },
+  {
+    name: "help",
+    description: "Cómo funciona el bot",
+  },
 ];
 
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);

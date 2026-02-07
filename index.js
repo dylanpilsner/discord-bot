@@ -1,6 +1,12 @@
 import "dotenv/config";
 import { Client, GatewayIntentBits } from "discord.js";
-import { refreshMembers, rolCommand, triesCommand } from "./utils/index.js";
+import {
+  bonusCommand,
+  refreshMembers,
+  rolCommand,
+  triesCommand,
+  helpCommand,
+} from "./utils/index.js";
 
 const client = new Client({
   intents: [
@@ -26,6 +32,12 @@ client.on("interactionCreate", async (interaction) => {
   }
   if (interaction.commandName === "intentos") {
     triesCommand(interaction);
+  }
+  if (interaction.commandName === "bonus") {
+    bonusCommand(interaction);
+  }
+  if (interaction.commandName === "help") {
+    helpCommand(interaction);
   }
 });
 

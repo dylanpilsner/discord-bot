@@ -1,5 +1,4 @@
 import { Sequelize } from "sequelize";
-import "dotenv/config";
 
 export const sequelize = new Sequelize(
   `postgresql://postgres.ttlabqdjuxuhoccfkgae:${process.env.POSTGRES_PASSWORD}@aws-1-us-east-1.pooler.supabase.com:5432/postgres`,
@@ -8,6 +7,10 @@ export const sequelize = new Sequelize(
     logging: false,
     define: {
       underscored: true,
+      schema:
+        process.env.RAILWAY_ENVIRONMENT_NAME === "development"
+          ? "qa"
+          : "public",
     },
     dialectOptions: {
       ssl: {
